@@ -22,7 +22,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         item?.action = #selector(AppDelegate.zipPurge)
         
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Purge", action: #selector(AppDelegate.zipPurge), keyEquivalent: "P"))
+        menu.addItem(NSMenuItem(title: "Select Directories", action: #selector(AppDelegate.zipPurge), keyEquivalent: "S"))
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(AppDelegate.quit), keyEquivalent: "Q"))
         
         item?.menu = menu
@@ -45,7 +45,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if result == NSFileHandlingPanelOKButton {
                 
                 // Alert user that they are about to delete files
-                let answer = self.warning(question: "Are you sure?", text: "You are about to delete all zip files from the specified directories")
+                let answer = self.warning(question: "Are you sure?", text: "You are about to delete all '.zip' files from the specified directories")
                 
                 if answer == true {
                 if let chosenDirectories = panel?.urls {
@@ -78,7 +78,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                     
                 }
-            }
+                } else {
+                    print("secondary dialogue box canceled")
+                }
             } else {
                 panel?.close()
                 print("Canceled")
@@ -88,7 +90,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         })
         
         
-           }
+    }
     
     func quit() {
         NSApplication.shared().terminate(self)
@@ -99,7 +101,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         myPopup.messageText = question
         myPopup.informativeText = text
         myPopup.alertStyle = NSAlertStyle.warning
-        myPopup.addButton(withTitle: "Delete them please!")
+        myPopup.addButton(withTitle: "Purge!")
         myPopup.addButton(withTitle: "Cancel")
         return myPopup.runModal() == NSAlertFirstButtonReturn
     }
