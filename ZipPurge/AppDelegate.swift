@@ -45,6 +45,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         panel?.begin(completionHandler: { (result) in
             if result == NSFileHandlingPanelOKButton {
                 
+                // Alert user that they are about to delete files
+                let answer = self.warning(question: "Are you sure?", text: "You are about to delete all zip files from the specified directories")
+                
                 if let chosenDirectories = panel?.urls {
                     
                     //print("Nice")
@@ -88,6 +91,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func quit() {
         NSApplication.shared().terminate(self)
+    }
+    
+    func warning(question: String, text: String) -> Bool {
+        let myPopup: NSAlert = NSAlert()
+        myPopup.messageText = question
+        myPopup.informativeText = text
+        myPopup.alertStyle = NSAlertStyle.warning
+        myPopup.addButton(withTitle: "Delete them please!")
+        myPopup.addButton(withTitle: "Cancel")
+        return myPopup.runModal() == NSAlertFirstButtonReturn
     }
 
 }
