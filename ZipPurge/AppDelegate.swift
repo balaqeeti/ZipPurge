@@ -37,10 +37,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let panel: NSOpenPanel? = NSOpenPanel()
         panel?.title = "Select Directory to delete all ZIP files from"
         panel?.allowsMultipleSelection = true
-        panel?.canChooseFiles = true
+        panel?.canChooseFiles = false
         panel?.canChooseDirectories = true
         panel?.allowedFileTypes = ["zip"]
-        //panel?.runModal()
         
         panel?.begin(completionHandler: { (result) in
             if result == NSFileHandlingPanelOKButton {
@@ -48,16 +47,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // Alert user that they are about to delete files
                 let answer = self.warning(question: "Are you sure?", text: "You are about to delete all zip files from the specified directories")
                 
+                if answer == true {
                 if let chosenDirectories = panel?.urls {
                     
-                    //print("Nice")
-                    //print("\(chosenDirectories)")
+                    // Iterate through the multiple directories selected
                     for directory in chosenDirectories {
                         
                         print("\(directory)")
                         do {
                             let contentArray =  try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: [], options: FileManager.DirectoryEnumerationOptions(rawValue: 0))
-                            //print("\(contentArray)")
+                            
+                            // Iterate through specific file paths of the directory
                             for url in contentArray {
                                 if url.absoluteString.contains("zip") {
                                     print(url)
@@ -78,9 +78,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                     
                 }
-
+            }
             } else {
                 panel?.close()
+                print("Canceled")
             }
 
             
