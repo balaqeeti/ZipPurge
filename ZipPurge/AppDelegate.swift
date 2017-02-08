@@ -35,44 +35,56 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func zipPurge() {
         print("Lets getem!")
         let panel: NSOpenPanel? = NSOpenPanel()
-        
+        panel?.title = "Select Directory to delete all ZIP files from"
         panel?.allowsMultipleSelection = true
-        panel?.canChooseFiles = false
+        panel?.canChooseFiles = true
         panel?.canChooseDirectories = true
         panel?.allowedFileTypes = ["zip"]
+        //panel?.runModal()
         
-        panel?.runModal()
-        
-        if let chosenDirectories = panel?.urls {
-           
-            //print("Nice")
-            //print("\(chosenDirectories)")
-            for directory in chosenDirectories {
-            
-                print("\(directory)")
-                do {
-                   let contentArray =  try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: [], options: FileManager.DirectoryEnumerationOptions(rawValue: 0))
-                    //print("\(contentArray)")
-                    for url in contentArray {
-                        if url.absoluteString.contains("zip") {
-                            print(url)
-                            do {
-                            try FileManager.default.removeItem(at: url)
-                            print("Deleted!")
-                            } catch {
-                                print("Items not deleted")
+        panel?.begin(completionHandler: { (result) in
+            if result == NSFileHandlingPanelOKButton {
+                
+                if let chosenDirectories = panel?.urls {
+                    
+                    //print("Nice")
+                    //print("\(chosenDirectories)")
+                    for directory in chosenDirectories {
+                        
+                        print("\(directory)")
+                        do {
+                            let contentArray =  try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: [], options: FileManager.DirectoryEnumerationOptions(rawValue: 0))
+                            //print("\(contentArray)")
+                            for url in contentArray {
+                                if url.absoluteString.contains("zip") {
+                                    print(url)
+                                    do {
+                                        try FileManager.default.removeItem(at: url)
+                                        print("Deleted!")
+                                    } catch {
+                                        print("Items not deleted")
+                                    }
+                                }
+                                
                             }
+                        } catch {
+                            print ("Directory not selected")
                         }
+                        print("Purge Complete, no more ZIP files here")
                         
                     }
-                } catch {
-                    print ("Directory not selected")
+                    
                 }
-                
+
+            } else {
+                panel?.close()
             }
+
+            
+        })
         
-        }
-    }
+        
+           }
     
     func quit() {
         NSApplication.shared().terminate(self)
